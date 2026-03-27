@@ -6,21 +6,16 @@ on:
 
 env:
   AWS_REGION: us-east-1
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repository
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # Explicitly set Node.js 24 for GitHub Actions using Node
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '24'
-
-      # Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -29,12 +24,10 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # Login to ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # Build and push Docker image
       - name: Build and push Docker image
         run: |
           docker build -t ${{ steps.login-ecr.outputs.registry }}/clo835-flask-app:${{ github.sha }} .
