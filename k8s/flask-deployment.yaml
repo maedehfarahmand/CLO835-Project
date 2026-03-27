@@ -24,16 +24,6 @@ spec:
                 name: app-config
             - secretRef:
                 name: mysql-secret
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: flask-service
-  namespace: final
-spec:
-  selector:
-    app: flask-app
-  ports:
-    - port: 80
-      targetPort: 81
-  type: LoadBalancer
+          env:
+            - name: DBHOST
+              value: mysql-service   # <- points to MySQL Service
