@@ -37,7 +37,7 @@ def get_student_entries():
             database=DB_NAME
         )
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM students;")  # Change table name as needed
+        cursor.execute("SELECT * FROM employees;")  # Change table name as needed
         results = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -48,8 +48,9 @@ def get_student_entries():
 
 @app.route("/")
 def index():
-    students = get_student_entries()
-    return render_template("index.html", name=STUDENT_NAME, students=students)
+    employees = get_student_entries()
+    return render_template("index.html", name=STUDENT_NAME, employees=employees)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=81)
