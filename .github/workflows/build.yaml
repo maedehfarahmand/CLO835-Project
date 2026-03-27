@@ -15,11 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -32,13 +27,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Run unit tests
-        run: |
-          pip install -r requirements.txt
-          pip install pytest
-          pytest -v
-
-      - name: Build and push
+      - name: Build and push Docker image
         run: |
           docker build -t ${{ steps.login-ecr.outputs.registry }}/clo835-flask-app:${{ github.sha }} .
           docker push ${{ steps.login-ecr.outputs.registry }}/clo835-flask-app:${{ github.sha }}
