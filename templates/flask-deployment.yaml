@@ -1,0 +1,39 @@
+yamlapiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+  namespace: final
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      serviceAccountName: clo835
+      containers:
+        - name: flask-app
+          image: YOUR_ECR_URI/clo835-flask-app:latest
+          ports:
+            - containerPort: 81
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: mysql-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-service
+  namespace: final
+spec:
+  selector:
+    app: flask-app
+  ports:
+    - port: 80
+      targetPort: 81
+  type: LoadBalancer
