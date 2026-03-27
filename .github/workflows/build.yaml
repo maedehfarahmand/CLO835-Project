@@ -6,14 +6,19 @@ on:
 
 env:
   AWS_REGION: us-east-1
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -31,15 +36,9 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest
-          pytest tests/ -v
+          pytest -v
 
-      - name: Build and push Flask app image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: clo835-flask-app
-          IMAGE_TAG: ${{ github.sha }}
+      - name: Build and push
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/clo835-flask-app:${{ github.sha }} .
+          docker push ${{ steps.login-ecr.outputs.registry }}/clo835-flask-app:${{ github.sha }}
