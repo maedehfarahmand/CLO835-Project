@@ -1,0 +1,11 @@
+yamlapiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: final
+data:
+  BACKGROUND_IMAGE_URL: "s3://mygeneralpurposebucket18735378/background.jpg"
+  STUDENT_NAME: "Your Name"
+  DBHOST: "mysql-service"
+  DBPORT: "3306"
+  DATABASE: "employees"
