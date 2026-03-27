@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: 781568375230.dkr.ecr.us-east-1.amazonaws.com/clo835-mysql:latest  # <-- your custom image
+          image: 781568375230.dkr.ecr.us-east-1.amazonaws.com/clo835-mysql:latest
           ports:
             - containerPort: 3306
           env:
@@ -47,4 +47,5 @@ spec:
     app: mysql
   ports:
     - port: 3306
+      targetPort: 3306
   type: ClusterIP
