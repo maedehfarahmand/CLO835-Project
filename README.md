@@ -47,7 +47,7 @@ CLO835-Project/
 │   ├── flask-deployment.yaml     # Flask app Deployment + Service
 │   ├── mysql-deployment.yaml     # MySQL Deployment + Service
 │   ├── configmap.yaml            # Non-sensitive environment variables
-│   ├── secret.yaml               # Sensitive credentials (DBUSER, DBPWD)
+│   ├── secret.yaml.template      # Template for secret (never commit secret.yaml)
 │   ├── pvc.yaml                  # PersistentVolumeClaim for MySQL data
 │   ├── rbac.yaml                 # RBAC roles and bindings
 │   └── serviceaccount.yaml       # Kubernetes ServiceAccount
@@ -70,12 +70,14 @@ CLO835-Project/
 | `DATABASE` | MySQL database name |
 | `BACKGROUND_IMAGE_URL` | S3 URL for the background image |
 
-### Secret (`k8s/secret.yaml`)
+### Secret (`k8s/secret.yaml`) — not committed to Git
 
 | Variable | Description |
 |----------|-------------|
 | `DBUSER` | MySQL username |
 | `DBPWD` | MySQL password |
+
+> **Security note:** `secret.yaml` is listed in `.gitignore` and must never be committed to the repository. Use `secret.yaml.template` as a reference and create your own `secret.yaml` locally.
 
 ---
 
@@ -105,6 +107,17 @@ CREATE TABLE IF NOT EXISTS employee (
 - GitHub repository secrets set: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`
 
 ### Deploy to Kubernetes
+
+> **Important:** `secret.yaml` is not in the repository. You must create it from the template before deploying.
+
+**Step 1 — create your secret file from the template:**
+
+```bash
+cp k8s/secret.yaml.template k8s/secret.yaml
+nano k8s/secret.yaml   # fill in your real DBUSER and DBPWD
+```
+
+**Step 2 — apply all manifests in order:**
 
 ```bash
 kubectl apply -f k8s/configmap.yaml
@@ -159,8 +172,9 @@ kubectl rollout restart deployment flask-app -n final
 - Check Flask logs: `kubectl logs -f deployment/flask-app -n final`
 
 **"Access denied" DB error in logs**
-- The MySQL credentials in `secret.yaml` don't match the MySQL user's actual password
-- Fix: `kubectl exec` into the MySQL pod, log in as root, and run `ALTER USER 'root'@'%' IDENTIFIED BY '<your-password>';`
+- The credentials in `secret.yaml` don't match what MySQL expects
+- Decode the current secret to verify: `kubectl get secret mysql-secret -n final -o jsonpath='{.data.DBPWD}' | base64 --decode`
+- Fix inside the MySQL pod: `ALTER USER '<your-user>'@'%' IDENTIFIED BY '<your-password>';`
 
 **Pod not picking up new code after push**
 - Force a rollout restart: `kubectl rollout restart deployment flask-app -n final`
