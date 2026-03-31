@@ -1,15 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Employee Database</title>
   <style>
-    body { background-image: url("/static/background.jpg"); background-size: cover; color: white; font-family: sans-serif; }
+    body {
+      background-image: url("/static/background.jpg");
+      background-size: cover;
+      background-color: {{ color }};
+      color: white;
+      font-family: sans-serif;
+    }
     h1 { text-align: center; }
+    nav {
+      text-align: center;
+      margin: 16px 0;
+    }
+    nav a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 24px;
+      background: rgba(0,0,0,0.55);
+      color: DodgerBlue;
+      text-decoration: none;
+      border: 1px solid DodgerBlue;
+      border-radius: 4px;
+      font-size: 15px;
+    }
+    nav a:hover { background: rgba(30,144,255,0.3); }
     table { margin: 20px auto; border-collapse: collapse; background: rgba(0,0,0,0.6); }
     th, td { border: 1px solid white; padding: 8px 12px; }
+    p { text-align: center; }
   </style>
 </head>
 <body>
   <h1>Welcome — {{ name }}</h1>
+
+  <nav>
+    <a href="{{ url_for('home') }}">🏠 Home</a>
+    <a href="{{ url_for('addemp') }}">➕ Add Employee</a>
+    <a href="{{ url_for('getemp') }}">🔍 Get Employee</a>
+    <a href="{{ url_for('about') }}">ℹ️ About</a>
+  </nav>
 
   {% if employees %}
     <table>
@@ -27,7 +58,7 @@
       {% endfor %}
     </table>
   {% else %}
-    <p style="text-align:center;">No employee data found.</p>
+    <p>No employee data found. <a href="{{ url_for('addemp') }}" style="color:DodgerBlue;">Add one now.</a></p>
   {% endif %}
 </body>
 </html>
