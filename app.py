@@ -45,7 +45,7 @@ def home():
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM employees;")
+        cursor.execute("SELECT * FROM employee;")
         employees = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -102,7 +102,7 @@ def fetchdata():
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM employees WHERE emp_id = %s;", (emp_id,))
+        cursor.execute("SELECT * FROM employee WHERE emp_id = %s;", (emp_id,))
         emp = cursor.fetchone() or {}
         cursor.close()
         conn.close()
