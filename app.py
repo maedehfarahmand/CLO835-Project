@@ -73,7 +73,7 @@ def addemp_post():
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO employees (emp_id, first_name, last_name, primary_skill, location) "
+            "INSERT INTO employee (emp_id, first_name, last_name, primary_skill, location) "
             "VALUES (%s, %s, %s, %s, %s)",
             (emp_id, first_name, last_name, primary_skill, location)
         )
