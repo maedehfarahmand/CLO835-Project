@@ -9,7 +9,7 @@ metadata:
 
 availabilityZones: ["us-east-1a" ,"us-east-1b" ,"us-east-1c"]
 iam:
-  serviceRoleARN: arn:aws:iam::781568375230:role/LabRole
+  serviceRoleARN: arn:aws:iam::468401300310:role/LabRole
 managedNodeGroups:
 - name: nodegroup
   desiredCapacity: 2
@@ -17,4 +17,4 @@ managedNodeGroups:
   ssh:
     enableSsm: true
   iam:
-    instanceRoleARN: arn:aws:iam::781568375230:role/LabRole
+    instanceRoleARN: arn:aws:iam::468401300310:role/LabRole
